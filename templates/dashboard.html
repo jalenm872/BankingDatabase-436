@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for messages in get_flashed_messages()%}
+
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ messages }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    
+{% endfor %}
+
+<h1> Dashboard </h1>
+
+<h3> Hello {{ session["username"] |capitalize }}!</h3>
+
+<h2>Savings Account</h2>
+
+{% for saving in savings %}
+
+    <div>
+        <h4> {{ saving.account_number }} </h4>
+        <p> {{ saving.balance }} </p>
+    </div>
+
+{% endfor %}
+
+<h2>Checking Account</h2>
+
+{% for checking in checking %}
+
+    <div>
+        <h4> {{ checking.account_number }} </h4>
+        <p> {{ checking.balance }} </p>
+    </div>
+
+{% endfor %}
+
+<h2>Credit Score</h2>
+
+<form method="POST" action="/transfer">
+    {{ form.hidden_tag()}}
+    {{ form.from_account.label(class="form-label") }}
+    <select name="from_account" class="form-select" aria-label="Choose Account" required>
+        <option selected>Choose Account</option>
+        {% for account in all_accounts %}
+            <option value="{{ account.account_number }}">{{ account.account_number }}</option>
+        {% endfor %}
+    </select>
+    {{ form.to_account.label(class="form-label") }}
+    <select name="to_account" class="form-select" aria-label="Choose Account" required>
+        <option selected>Choose Account</option>
+        {% for account in all_accounts %}
+            <option value="{{ account.account_number }}">{{ account.account_number }}</option>
+        {% endfor %}
+    </select>
+    {{ form.amount.label(class="form-label") }}
+    <input type="number" name="amount" class="form-control" id="amount" placeholder="Enter amount" required>
+
+    <br/>
+    {{ form.submit(class="btn btn-secondary") }}
+</form>
+
+
+{% endblock %}
