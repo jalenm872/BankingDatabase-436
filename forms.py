@@ -13,6 +13,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign In')
 
+#Create transfer form class
 class TransferForm(FlaskForm):
     to_account = StringField('To Account', validators=[DataRequired()])
     from_account = StringField('From Account', validators=[DataRequired()])

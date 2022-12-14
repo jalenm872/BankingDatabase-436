@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from forms import LoginForm, ChangeNumberForm, TransferForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 #Create a flask instance
 app = Flask(__name__, template_folder='templates')
@@ -15,6 +17,7 @@ app.config['SESSION_TYPE'] = "filesystem"
 #app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=5)
 Session(app)
 
+
 #Create a secret key for CSRF protection
 app.config['SECRET_KEY'] = 'SECRET_KEY'
 
@@ -23,6 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:beckwith278@localh
 
 #Initialize the database
 db = SQLAlchemy(app)
+
 
 #Create a login manager
 login_manager = LoginManager()
@@ -34,6 +38,7 @@ def load_user(user_id):
     return user_info.query.get(int(user_id))
 
 
+#Create a class for all the data tables
 class user_info(db.Model, UserMixin):
     customer_id = db.Column(db.Integer, primary_key = True)
     account_number = db.Column(db.Integer(), unique = True)
@@ -47,7 +52,7 @@ class user_info(db.Model, UserMixin):
     def is_active(self):
           return super().is_active
 
-class customer_info(db.Model):
+class customers(db.Model):
     customer_name = db.Column(db.String(32))
     credit_score = db.Column(db.Integer)
     customer_id = db.Column(db.Integer, primary_key = True)
@@ -82,6 +87,31 @@ class loans(db.Model):
       interest = db.Column(db.Float)
       amount = db.Column(db.Integer)
       duration = db.Column(db.Integer)
+admin = Admin(app)
+
+class UserModel(ModelView):
+    column_display_pk = True
+    form_columns = ('customer_id', 'account_number', 'username', 'passwd')
+class CustomerModel(ModelView):
+    column_display_pk = True
+    form_columns = ('customer_name', 'credit_score', 'customer_id', 'address', 'state', 'account_number', 'age', 'phone_number')
+class AccountsModel(ModelView):
+    column_display_pk = True
+    form_columns = ('account_number', 'customer_id', 'account_type', 'balance', 'routing_number', 'department_id')
+class LoansModel(ModelView):
+    column_display_pk = True
+    form_columns = ('loan_type', 'loan_id', 'interest', 'amount', 'duration')
+class BankDepartmentModel(ModelView):
+    column_display_pk = True
+    form_columns = ('location', 'name', 'department_id')
+
+
+admin.add_view(UserModel(user_info, db.session))
+admin.add_view(CustomerModel(customers, db.session))
+admin.add_view(AccountsModel(accounts, db.session))
+admin.add_view(LoansModel(loans, db.session))
+admin.add_view(BankDepartmentModel(bank_department, db.session))
+
 
 # Create a route decorator
 @app.route('/')
@@ -130,6 +160,7 @@ def login():
                 login_user(user, remember=True)
                 session["username"] = username
                 session["id"] = user.customer_id
+                session["account_number"] = user.account_number
                 return redirect(url_for('dashboard'))
     return render_template("login.html", form = form)
 
@@ -146,7 +177,6 @@ def dashboard():
     all_accounts = accounts.query.filter_by(customer_id = session["id"]).all()
     return render_template("dashboard.html", savings = savings, checking = checking, all_accounts = all_accounts, form=form)
 
-
 # Logout Page
 @app.route('/logout')
 def logout():
@@ -159,9 +189,23 @@ def logout():
 def change_number():
     #change_number = None
     form = ChangeNumberForm()
+    if not session.get("username"):
+        flash("Please login first!")
+        return redirect(url_for('login'))
     #number_to_update = user_info.query.get_or_404(id)
     if form.validate_on_submit():
+        number = request.form.get('new_number')
+        account_number = current_user.account_number
+        print(account_number)
+        print(number)
+        #Update the phone number
+        #customer.query.update().where(customer.c.account_number == account_number).values(phone_number = new_number)
+        # customer = customers.query.filter_by(account_number = account_number).first()
+        # customer.phone_number = new_number
+        db.session.commit()
         flash("Phone number changed successfully!")
+        return redirect(url_for('dashboard'))
+        
     return render_template("changeNumber.html", form=form)
 
 #Transfer
@@ -210,7 +254,6 @@ def transfer():
         flash("Transfer failed!")
     return redirect(url_for('dashboard'))
         
-    
 
 if __name__ == '__main__':
     app.run(debug=True)
