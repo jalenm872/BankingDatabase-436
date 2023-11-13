@@ -22,7 +22,7 @@ Session(app)
 app.config['SECRET_KEY'] = 'SECRET_KEY'
 
 #Set up database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:beckwith278@localhost:3306/Banking_Database'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:022701jJ!@localhost:3306/Banking_Database'
 
 #Initialize the database
 db = SQLAlchemy(app)
