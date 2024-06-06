@@ -27,7 +27,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:022701jJ!@localhos
 #Initialize the database
 db = SQLAlchemy(app)
 
-
 #Create a login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -61,6 +60,7 @@ class customers(db.Model):
     account_number = db.Column(db.Integer)
     age = db.Column(db.Integer)
     phone_number = db.Column(db.String(10))
+
 
 class bank_department(db.Model):
       location = db.Column(db.String(50))
