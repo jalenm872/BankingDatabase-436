@@ -1,65 +1,76 @@
-{% extends "base.html" %}
+<html>
 
-{% block content %}
+    <head>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/dashboard.css') }}">
+    </head>
+    <body>
+        {% extends "base.html" %}
 
-{% for messages in get_flashed_messages()%}
+        {% block content %}
 
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ messages }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+        {% for messages in get_flashed_messages()%}
 
-    
-{% endfor %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ messages }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
-<h1> Dashboard </h1>
-
-<h3> Hello {{ session["username"] |capitalize }}!</h3>
-
-<h2>Savings Account</h2>
-
-{%for Savings in savings_list%}
-
-    <div>
-        <h4> {{ saving.account_number }} </h4>
-        <p> {{ saving.balance }} </p>
-    </div>
-
-{%endfor%}
-
-<h2>Checking Account</h2>
-
-{% for checking in checking %}
-
-    <div>
-        <h4> {{ checking.account_number }} </h4>
-        <p> {{ checking.balance }} </p>
-    </div>
-
-{% endfor %}
-
-<form method="POST" action="/transfer">
-    {{ form.hidden_tag()}}
-    {{ form.from_account.label(class="form-label") }}
-    <select name="from_account" class="form-select" aria-label="Choose Account" required>
-        <option selected>Choose Account</option>
-        {% for account in all_accounts %}
-            <option value="{{ account.account_number }}">{{ account.account_number }}</option>
+            
         {% endfor %}
-    </select>
-    {{ form.to_account.label(class="form-label") }}
-    <select name="to_account" class="form-select" aria-label="Choose Account" required>
-        <option selected>Choose Account</option>
-        {% for account in all_accounts %}
-            <option value="{{ account.account_number }}">{{ account.account_number }}</option>
+
+        <h3> Hello, {{ session["username"] |capitalize }}!</h3>
+
+        <h1 style="max-width: fit-content; margin-left: auto; margin-right: auto;"> Dashboard </h1>
+
+        <h2>Banking Accounts</h2>
+
+        {%for Savings in savings_list%}
+
+            <div class="savings">
+                <h4> {{ saving.account_number - saving.balance }} </h4>
+                <!-- <p> {{ saving.balance }} </p> -->
+            </div>
+
+        {%endfor%}    
+
+        {% for checking in checking %}
+
+            <div class="checkings">
+                <h4> {{ checking.account_number }} - {{ checking.balance }}</h4>
+                <!-- <p> {{ checking.balance }} </p> -->
+            </div>
+
         {% endfor %}
-    </select>
-    {{ form.amount.label(class="form-label") }}
-    <input type="number" name="amount" class="form-control" id="amount" placeholder="Enter amount" required>
 
-    <br/>
-    {{ form.submit(class="btn btn-secondary") }}
-</form>
+        <!-- Spacing Bar -->
+        <div class="spacer"></div>
+
+        <h2>Transfer Money</h2>
+
+        <form method="POST" action="/transfer">
+            {{ form.hidden_tag()}}
+            {{ form.from_account.label(class="form-label") }}
+            <select name="from_account" class="form-select" aria-label="Choose Account" required>
+                <option selected>Choose Account</option>
+                {% for account in all_accounts %}
+                    <option value="{{ account.account_number }}">{{ account.account_number }}</option>
+                {% endfor %}
+            </select>
+            {{ form.to_account.label(class="form-label") }}
+            <select name="to_account" class="form-select" aria-label="Choose Account" required>
+                <option selected>Choose Account</option>
+                {% for account in all_accounts %}
+                    <option value="{{ account.account_number }}">{{ account.account_number }}</option>
+                {% endfor %}
+            </select>
+            {{ form.amount.label(class="form-label") }}
+            <input type="number" name="amount" class="form-control" id="amount" placeholder="Enter amount" required>
+
+            <br/>
+            {{ form.submit(class="btn btn-secondary") }}
+        </form>
 
 
-{% endblock %}
+        {% endblock %}
+    </body>
+</html>
