@@ -172,10 +172,10 @@ def dashboard():
         flash("Please login first!")
         return redirect(url_for('login'))
     
-    savings = accounts.query.filter_by(account_type = "Savings", customer_id = session["id"]).all()
+    savings_list= accounts.query.filter_by(account_type = "Savings", customer_id = session["id"]).all()
     checking = accounts.query.filter_by(account_type = "Checking", customer_id = session["id"] ).all()
     all_accounts = accounts.query.filter_by(customer_id = session["id"]).all()
-    return render_template("dashboard.html", savings = savings, checking = checking, all_accounts = all_accounts, form=form)
+    return render_template("dashboard.html", savings = savings_list, checking = checking, all_accounts = all_accounts, form=form)
 
 # Logout Page
 @app.route('/logout')

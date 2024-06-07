@@ -18,14 +18,14 @@
 
 <h2>Savings Account</h2>
 
-{% for saving in savings %}
+{%for Savings in savings_list%}
 
     <div>
         <h4> {{ saving.account_number }} </h4>
         <p> {{ saving.balance }} </p>
     </div>
 
-{% endfor %}
+{%endfor%}
 
 <h2>Checking Account</h2>
 
