@@ -34,6 +34,7 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(user_id):
+    #return user_info.session.get(int(user_id))
     return user_info.query.get(int(user_id))
 
 
@@ -173,9 +174,9 @@ def dashboard():
         return redirect(url_for('login'))
     
     savings_list= accounts.query.filter_by(account_type = "Savings", customer_id = session["id"]).all()
-    checking = accounts.query.filter_by(account_type = "Checking", customer_id = session["id"] ).all()
+    checkings_list = accounts.query.filter_by(account_type = "Checking", customer_id = session["id"] ).all()
     all_accounts = accounts.query.filter_by(customer_id = session["id"]).all()
-    return render_template("dashboard.html", savings = savings_list, checking = checking, all_accounts = all_accounts, form=form)
+    return render_template("dashboard.html", savings_list = savings_list, checkings_list = checkings_list, all_accounts = all_accounts, form=form)
 
 # Logout Page
 @app.route('/logout')

@@ -24,23 +24,23 @@
 
         <h2>Banking Accounts</h2>
 
-        {%for Savings in savings_list%}
+        <div class="accounts">
+            {%for saving in savings_list%}
 
-            <div class="savings">
-                <h4> {{ saving.account_number - saving.balance }} </h4>
-                <!-- <p> {{ saving.balance }} </p> -->
-            </div>
+                <div class="savings">
+                    <h4> Saving: {{ saving.account_number }} - ${{ saving.balance }} </h4>
+                </div>
 
-        {%endfor%}    
+            {%endfor%}    
 
-        {% for checking in checking %}
+            {% for checking in checkings_list %}
 
-            <div class="checkings">
-                <h4> {{ checking.account_number }} - {{ checking.balance }}</h4>
-                <!-- <p> {{ checking.balance }} </p> -->
-            </div>
+                <div class="checkings">
+                    <h4> Checking: {{ checking.account_number }} - ${{ checking.balance }}</h4>
+                </div>
 
-        {% endfor %}
+            {% endfor %}
+        </div>
 
         <!-- Spacing Bar -->
         <div class="spacer"></div>
